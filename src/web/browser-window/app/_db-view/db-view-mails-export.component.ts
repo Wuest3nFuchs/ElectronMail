@@ -1,10 +1,10 @@
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {ChangeDetectionStrategy, Component, inject, Input, TemplateRef} from "@angular/core";
-import {clone, pick} from "remeda";
 import {EMPTY, from} from "rxjs";
 import {mergeMap, takeUntil} from "rxjs/operators";
 import type {OnInit} from "@angular/core";
+import {pick} from "remeda";
 
 import {DB_VIEW_ACTIONS, NOTIFICATION_ACTIONS} from "src/web/browser-window/app/store/actions";
 import {DbViewAbstractComponent} from "./db-view-abstract.component";
@@ -88,9 +88,8 @@ export class DbViewMailsExportComponent extends DbViewAbstractComponent implemen
                 this.modalRef = this.modalService.show(
                     modalTemplate,
                     {
-                        initialState: clone(
-                            pick(this, ["mailsBundleItems", "rootConversationNode"]),
-                        ),
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+                        initialState: pick(this, ["mailsBundleItems", "rootConversationNode"]) as unknown as any,
                         class: `modal-lg ${selector}-modal`,
                         backdrop: "static",
                         ignoreBackdropClick: true,
@@ -126,7 +125,7 @@ export class DbViewMailsExportComponent extends DbViewAbstractComponent implemen
     }
 
     submit(): void {
-        const mails: View.Mail[] = this.mailsBundleItems
+        const mails: DeepReadonly<View.Mail[]> = this.mailsBundleItems
             ? this.mailsBundleItems.map(({mail}) => mail)
             : this.rootConversationNode
             ? filterConversationNodesMails([this.rootConversationNode])

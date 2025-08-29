@@ -242,12 +242,6 @@ export abstract class AccountViewAbstractDirective extends AccountLoginAwareDire
                 this.log("error", ["webview event", JSON.stringify(pick(event, ["type"]))]);
             },
         ] as const;
-        const pluginCrashedArgs = [
-            "plugin-crashed",
-            (event: import("electron").PluginCrashedEvent) => {
-                this.log("error", ["webview event", JSON.stringify(pick(event, ["type", "name", "version"]))]);
-            },
-        ] as const;
 
         // TODO TS: define events array/map and subscribe/unsubscribe in iteration
         //      it's currently not possible since TS doesn't support overloaded methods narrowing:
@@ -260,7 +254,6 @@ export abstract class AccountViewAbstractDirective extends AccountLoginAwareDire
         webView.addEventListener(...consoleMessageArgs);
         webView.addEventListener(...didFailLoadArgs);
         webView.addEventListener(...crashedArgs);
-        webView.addEventListener(...pluginCrashedArgs);
 
         this.log("info", ["webview handlers subscribed"]);
 
@@ -273,7 +266,6 @@ export abstract class AccountViewAbstractDirective extends AccountLoginAwareDire
                 webView.removeEventListener(...consoleMessageArgs);
                 webView.removeEventListener(...didFailLoadArgs);
                 webView.removeEventListener(...crashedArgs);
-                webView.removeEventListener(...pluginCrashedArgs);
 
                 this.log("info", ["webview handlers unsubscribed"]);
             },
