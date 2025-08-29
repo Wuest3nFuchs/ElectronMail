@@ -156,38 +156,20 @@ export function registerApi(
 
             const observables = [
                 (() => {
-                    const isEventsApiUrl = providerApi._custom_.buildEventsApiUrlTester({entryApiUrl});
-                    const isMessagesCountApiUrl = providerApi._custom_.buildMessagesCountApiUrlTester({entryApiUrl});
-                    const excludeLabelIdsFromUnreadCalculation = ((excludeIds: string[]) => {
-                        return (labelID: string) => excludeIds.includes(labelID);
-                    })([
-                        SYSTEM_FOLDER_IDENTIFIERS.Archive,
-                        SYSTEM_FOLDER_IDENTIFIERS.Spam,
-                        SYSTEM_FOLDER_IDENTIFIERS.Trash,
-                        SYSTEM_FOLDER_IDENTIFIERS["All Mail"],
-                        SYSTEM_FOLDER_IDENTIFIERS["Almost All Mail"],
-                    ]);
                     const responseListeners = [{
-                        tester: {test: isMessagesCountApiUrl},
+                        tester: {test: providerApi._custom_.buildMessagesCountApiUrlTester({entryApiUrl})},
                         handler: ({Counts}: {Counts?: Array<{LabelID: string; Unread: number}>}) => {
-                            if (!Counts) {
-                                return;
-                            }
-                            return Counts.filter(({LabelID}) => !excludeLabelIdsFromUnreadCalculation(LabelID)).reduce(
-                                (accumulator, item) => accumulator + item.Unread,
-                                0,
-                            );
+                            return Counts?.find(({LabelID}) => LabelID === SYSTEM_FOLDER_IDENTIFIERS["Almost All Mail"])?.Unread ?? 0;
                         },
                     }, {
-                        tester: {test: isEventsApiUrl},
+                        tester: {test: providerApi._custom_.buildEventsApiUrlTester({entryApiUrl})},
                         handler: ({MessageCounts}: RestModel.EventResponse) => {
+                            // WARN: this test is required as we must not process the events without "MessageCounts" value
+                            //       no "unread" change happened and so we should skip such events during "unread" calculation
                             if (!MessageCounts) {
                                 return;
                             }
-                            return MessageCounts.filter(({LabelID}) => !excludeLabelIdsFromUnreadCalculation(LabelID)).reduce(
-                                (accumulator, item) => accumulator + item.Unread,
-                                0,
-                            );
+                            return MessageCounts.find(({LabelID}) => LabelID === SYSTEM_FOLDER_IDENTIFIERS["Almost All Mail"])?.Unread ?? 0;
                         },
                     }] as const;
 
