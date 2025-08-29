@@ -1,8 +1,8 @@
 diff --git a/packages/shared/lib/helpers/sentry.ts b/packages/shared/lib/helpers/sentry.ts
-index 52cf78fdc8..32ac55564b 100644
+index 779bd5f2f5..8e1b339173 100644
 --- a/packages/shared/lib/helpers/sentry.ts
 +++ b/packages/shared/lib/helpers/sentry.ts
-@@ -182,120 +182,7 @@ function main({
+@@ -184,120 +184,7 @@ function main({
      ignore = ({ host }) => isLocalhost(host),
      denyUrls = getDefaultDenyUrls(),
      ignoreErrors = getDefaultIgnoreErrors(),
@@ -122,9 +122,9 @@ index 52cf78fdc8..32ac55564b 100644
 -}
 +}: SentryOptions) { }
  
- export const traceError = (...args: Parameters<typeof captureException>) => {
-     if (!isLocalhost(window.location.host)) {
-@@ -342,15 +229,7 @@ type CaptureExceptionArgs = Parameters<typeof captureException>;
+ export const setSentryTags = (tags: Record<string, any>) => {
+     configureScope((scope) => {
+@@ -352,15 +239,7 @@ type CaptureExceptionArgs = Parameters<typeof captureException>;
   * @param initiative
   * @param error
   */
@@ -141,7 +141,7 @@ index 52cf78fdc8..32ac55564b 100644
  
  /**
   * Capture message with an additional initiative tag
-@@ -360,12 +239,6 @@ export const traceInitiativeError = (initiative: SentryInitiative, error: Captur
+@@ -370,12 +249,6 @@ export const traceInitiativeError = (initiative: SentryInitiative, error: Captur
  export const captureInitiativeMessage: (initiative: SentryInitiative, message: string) => void = (
      initiative,
      message

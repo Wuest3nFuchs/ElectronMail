@@ -20,25 +20,17 @@ index 0195dc8bea..a16225db6d 100644
 --
 
 diff --git a/applications/mail/package.json b/applications/mail/package.json
-index ef88d8efca..ab2bdb4af4 100644
+index e628258a68..668827bd9d 100644
 --- a/applications/mail/package.json
 +++ b/applications/mail/package.json
 @@ -7,7 +7,6 @@
      "main": "index.js",
      "scripts": {
          "analyze": "yarn build:web --analyze",
--        "build:web": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"../../tsconfig.webpack.json\" proton-pack build --configV2 --webpackOnCaffeine --appMode=sso --logical",
+-        "build:web": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"../../tsconfig.webpack.json\" proton-pack build --webpackOnCaffeine --appMode=sso --logical",
          "check-types": "tsc",
          "i18n:extract:web": "proton-i18n extract",
          "i18n:getlatest": "proton-i18n upgrade",
-@@ -101,4 +100,4 @@
-         "typescript": "^5.8.3",
-         "workbox-webpack-plugin": "^7.3.0"
-     }
--}
-+}
-\ No newline at end of file
---
 
 diff --git a/applications/mail/src/app/index.tsx b/applications/mail/src/app/index.tsx
 index b4d841c7cd..96d2b5c9b4 100644
@@ -174,29 +166,19 @@ index 6d76b8f635..d541b5b7d6 100644
      params: { AddressID },
  });
  
-diff --git a/applications/mail/src/app/containers/mailbox/MailboxContainer.tsx b/applications/mail/src/app/containers/mailbox/MailboxContainer.tsx
-index f3b94f1306..2704038939 100644
---- a/applications/mail/src/app/containers/mailbox/MailboxContainer.tsx
-+++ b/applications/mail/src/app/containers/mailbox/MailboxContainer.tsx
-@@ -105,8 +105,8 @@ const MailboxContainer = ({ labelID: inputLabelID, mailSettings, userSettings, e
-     const { selectAll, setSelectAll } = useSelectAll({ labelID: inputLabelID });
-     const { setCheckAllRef } = useCheckAllRef();
- 
--    const labelDropdownToggleRef = useRef<() => void>(() => {});
--    const moveDropdownToggleRef = useRef<() => void>(() => {});
-+    const labelDropdownToggleRef = useRef<() => void>(() => { });
-+    const moveDropdownToggleRef = useRef<() => void>(() => { });
- 
-     const { enableResize, resetWidth, scrollBarWidth, isResizing } = useResizeMessageView(
-         mainAreaRef,
-@@ -551,6 +551,7 @@ const MailboxContainer = ({ labelID: inputLabelID, mailSettings, userSettings, e
-                 tabIndex={-1}
-                 className="flex-1 flex flex-column flex-nowrap outline-none"
-                 data-testid="mailbox"
-+                electron-mail-mailbox-container-component
-             >
-                 <MailHeader
-                     elementID={elementID}
+diff --git a/applications/mail/src/app/router/RouterLabelContainer.tsx b/applications/mail/src/app/router/RouterLabelContainer.tsx
+index 5c6bcc4537..c2702a8b5d 100644
+--- a/applications/mail/src/app/router/RouterLabelContainer.tsx
++++ b/applications/mail/src/app/router/RouterLabelContainer.tsx
+@@ -177,7 +177,7 @@ export const RouterLabelContainer = ({
+         <div
+             ref={elementRef}
+             tabIndex={-1}
+-            className="flex flex-1 flex-nowrap outline-none relative"
++            className="flex flex-1 flex-nowrap outline-none relative electron-mail-mailbox-container-component"
+             data-testid="mailbox"
+         >
+             <ResizableWrapper
 
 diff --git a/applications/mail/src/app/helpers/attachment/attachmentLoader.ts b/applications/mail/src/app/helpers/attachment/attachmentLoader.ts
 index 92c8a131f2..dd3593d6e9 100644
@@ -291,41 +273,46 @@ index 8698fb0667..dc8a639795 100644
          ({ email, lifetime = DEFAULT_LIFETIME, contactEmailsMap }) => {
 
 diff --git a/applications/mail/src/app/helpers/message/messageDecrypt.ts b/applications/mail/src/app/helpers/message/messageDecrypt.ts
-index 3c994a7fa3..87803c24fa 100644
+index 9ae89d95b2..0d3e293926 100644
 --- a/applications/mail/src/app/helpers/message/messageDecrypt.ts
 +++ b/applications/mail/src/app/helpers/message/messageDecrypt.ts
-@@ -25,6 +25,7 @@ const binaryToString = (data: Uint8Array) =>
+@@ -29,15 +29,17 @@ const binaryToString = (data: Uint8Array<ArrayBuffer>) =>
          // nbsp can be contained in message body and "crash" DOMPurify
          .replace(/\u00A0/g, ' ');
-
+ 
 +/* <electron-mail-mark> */
  export interface DecryptMessageResult {
-     decryptedBody: string;
-     decryptedRawContent: Uint8Array;
-@@ -34,6 +35,7 @@ export interface DecryptMessageResult {
-     errors?: MessageErrors;
+-    decryptedBody: string;
++    decryptedBody: string; // electron-mail-mark
+     decryptedRawContent: Uint8Array<ArrayBuffer>;
+     attachments?: Attachment[];
+-    decryptedSubject?: string;
++    decryptedSubject?: string; // electron-mail-mark
+     signature?: Uint8Array<ArrayBuffer>;
+-    errors?: MessageErrors;
++    errors?: MessageErrors; // electron-mail-mark
      mimetype?: MIME_TYPES;
  }
 +/* </electron-mail-mark> */
-
+ 
  const decryptMimeMessage = async (
      message: Message,
-@@ -92,6 +94,7 @@ const decryptMimeMessage = async (
-  * Willingly not dealing with public keys and signature verification
+@@ -98,11 +100,11 @@ const decryptMimeMessage = async (
   * It will be done separately when public keys will be ready
   */
-+/* <electron-mail-mark> */
  export const decryptMessage = async (
-     message: Message,
+-    message: Message,
++    message: Message, // electron-mail-mark
      privateKeys: PrivateKeyReference[],
-@@ -132,6 +135,7 @@ export const decryptMessage = async (
-         };
+-    onUpdateAttachment?: (ID: string, attachment: DecryptedAttachment) => void,
+-    password?: string
+-): Promise<DecryptMessageResult> => {
++    onUpdateAttachment?: (ID: string, attachment: DecryptedAttachment) => void, // electron-mail-mark
++    password?: string, // electron-mail-mark
++): Promise<DecryptMessageResult> => { // electron-mail-mark
+     if (isMIME(message)) {
+         return decryptMimeMessage(message, privateKeys, onUpdateAttachment);
      }
- };
-+/* </electron-mail-mark> */
-
- /**
-  * Verify the extracted `signature` of a decryption result against its `decryptedRawContent`
 
 diff --git a/applications/mail/src/app/hooks/message/useGetMessageKeys.ts b/applications/mail/src/app/hooks/message/useGetMessageKeys.ts
 index 6360a876f1..e0c9287e45 100644
@@ -448,37 +435,18 @@ index 2aaa779d3..487f54ff3 100644
  };
 
 diff --git a/applications/mail/src/app/components/drawer/MailQuickSettings.tsx b/applications/mail/src/app/components/drawer/MailQuickSettings.tsx
-index ed5c2eb6bb..5b49a0d4d6 100644
+index 73feeb2ce6..e6a8969498 100644
 --- a/applications/mail/src/app/components/drawer/MailQuickSettings.tsx
 +++ b/applications/mail/src/app/components/drawer/MailQuickSettings.tsx
-@@ -60,7 +60,6 @@ import { useCanReplayOnboarding } from 'proton-mail/hooks/useCanReplayOnboarding
+@@ -62,7 +62,6 @@ import { useCanReplayOnboarding } from 'proton-mail/hooks/useCanReplayOnboarding
  import useMailModel from 'proton-mail/hooks/useMailModel';
  
  import ClearBrowserDataModal from '../header/ClearBrowserDataModal';
 -import MailDefaultHandlerModal from '../header/MailDefaultHandlerModal';
  
- const { OFF, UNSET, SERVER_ONLY } = AI_ASSISTANT_ACCESS;
- 
-@@ -178,12 +177,12 @@ const MailQuickSettings = () => {
-     const mailReminders: QuickSettingsReminders[] = useMemo(() => {
-         const ktReminder: QuickSettingsReminders | undefined = showKT
-             ? {
--                  color: keyTransparencyNotification,
--                  icon: keyTransparencyNotification ? 'exclamation-circle-filled' : undefined,
--                  text: c('loc_nightly: Key transparency details').t`Key verification`,
--                  callback: handleShowKeyTransparencyModal,
--                  testID: 'key-verification',
--              }
-+                color: keyTransparencyNotification,
-+                icon: keyTransparencyNotification ? 'exclamation-circle-filled' : undefined,
-+                text: c('loc_nightly: Key transparency details').t`Key verification`,
-+                callback: handleShowKeyTransparencyModal,
-+                testID: 'key-verification',
-+            }
-             : undefined;
- 
-         return [ktReminder].filter(isTruthy);
-@@ -433,7 +432,6 @@ const MailQuickSettings = () => {
+ interface QuickSettingsSelectOption {
+     value: any;
+@@ -454,7 +453,6 @@ const MailQuickSettings = () => {
              </QuickSettingsButtonSection>
  
              {ElectronDefaultAppPrompt}

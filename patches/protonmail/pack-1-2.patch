@@ -1,23 +1,15 @@
 diff --git a/packages/pack/package.json b/packages/pack/package.json
-index 6075866de8..2603ba25b9 100644
+index d205199ffe..d9fc423093 100644
 --- a/packages/pack/package.json
 +++ b/packages/pack/package.json
 @@ -21,7 +21,6 @@
          "@babel/preset-typescript": "^7.27.1",
-         "@babel/runtime": "^7.27.6",
+         "@babel/runtime": "^7.28.2",
          "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
 -        "@proton/collect-metrics": "workspace:^",
          "@sentry/webpack-plugin": "^1.21.0",
-         "@swc/core": "^1.12.9",
-         "@types/webpack": "^5.28.5",
-@@ -70,4 +69,4 @@
-     "engines": {
-         "node": ">= 22.14.0"
-     }
--}
-+}
-\ No newline at end of file
---
+         "@swc/core": "^1.13.3",
+         "autoprefixer": "^10.4.21",
 
 diff --git a/packages/pack/webpack/plugins.js b/packages/pack/webpack/plugins.js
 index 7ab43445f2..58a577f805 100644

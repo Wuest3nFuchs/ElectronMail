@@ -181,3 +181,19 @@ index 9ef794f6ff..040b1e6fbb 100644
          ],
          []
      );
+
+diff --git a/packages/components/components/drawer/drawerAppButtons/VPNDrawerAppButton.tsx b/packages/components/components/drawer/drawerAppButtons/VPNDrawerAppButton.tsx
+index f3df722c46..c353629215 100644
+--- a/packages/components/components/drawer/drawerAppButtons/VPNDrawerAppButton.tsx
++++ b/packages/components/components/drawer/drawerAppButtons/VPNDrawerAppButton.tsx
+@@ -15,6 +15,9 @@ const VPNDrawerAppButton = ({
+     onClick,
+     ...rest
+ }: Optional<Omit<Props, 'tooltipText' | 'buttonContent'>, 'onClick'>) => {
++    if (___ELECTRON_MAIL_PROTON_SUPPRESS_UPSELL_ADS_PLACEHOLDER___) {
++        return null;
++    }    
+     const { toggleDrawerApp } = useDrawer();
+     const isVPNDrawerEnabled = useVPNDrawer();
+ 
+--

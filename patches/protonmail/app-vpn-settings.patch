@@ -23,25 +23,17 @@ index 4b2e5d76c3..4f36d35d34 100644
 --
 
 diff --git a/applications/vpn-settings/package.json b/applications/vpn-settings/package.json
-index 59f6645ac3..0d9cb9d488 100644
+index bb2cc6ef10..33c730e873 100644
 --- a/applications/vpn-settings/package.json
 +++ b/applications/vpn-settings/package.json
 @@ -6,7 +6,6 @@
      "author": "",
      "main": "index.js",
      "scripts": {
--        "build:web": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"../../tsconfig.webpack.json\" proton-pack build --configV2 --webpackOnCaffeine --appMode=standalone --logical",
+-        "build:web": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"../../tsconfig.webpack.json\" proton-pack build --webpackOnCaffeine --appMode=standalone --logical",
          "check-types": "tsc",
          "i18n:extract:web": "proton-i18n extract",
          "i18n:upgrade": "proton-i18n extract --verbose && proton-i18n crowdin --verbose",
-@@ -51,4 +50,4 @@
-         "prettier": "^3.6.2",
-         "typescript": "^5.8.3"
-     }
--}
-+}
-\ No newline at end of file
---
 
 diff --git a/applications/vpn-settings/webpack.config.ts b/applications/vpn-settings/webpack.config.ts
 index 2cd919188c..5ef859b4c9 100644

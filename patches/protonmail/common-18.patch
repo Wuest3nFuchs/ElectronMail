@@ -238,7 +238,7 @@ index c72145327e..bd29c31242 100644
  export default useLoad;
 
 diff --git a/packages/shared/lib/apps/apps.ts b/packages/shared/lib/apps/apps.ts
-index 703b1bc182..f9e8fa5fd6 100644
+index 457052b361..a724666553 100644
 --- a/packages/shared/lib/apps/apps.ts
 +++ b/packages/shared/lib/apps/apps.ts
 @@ -1,4 +1,4 @@
@@ -246,8 +246,8 @@ index 703b1bc182..f9e8fa5fd6 100644
 +import { APPS, type APP_NAMES, USER_ROLES, ELECTRON_MAIL_APPS } from '../constants';
  import { isElectronMail } from '../helpers/desktop';
  import type { OrganizationExtended, User } from '../interfaces';
- import { getIsGlobalSSOAccount, getIsPublicUserWithoutProtonAddress, getIsSSOVPNOnlyAccount } from '../keys';
-@@ -96,7 +96,7 @@ export const getAvailableApps = (
+ import { getIsExternalUserWithoutProtonAddressCreation, getIsGlobalSSOAccount, getIsSSOVPNOnlyAccount } from '../keys';
+@@ -93,7 +93,7 @@ export const getAvailableApps = (
      const availableAppsByOrganization = getAvailableAppsByOrganization(options);
      return allApps.filter((app) => {
          return !removeApps.has(app) && availableAppsByUser.has(app) && availableAppsByOrganization.has(app);
@@ -373,11 +373,11 @@ index 988ad7b79f..0000000000
 -export default DesktopNotificationTopBanner;
 
 diff --git a/packages/components/containers/topBanners/TopBanners.tsx b/packages/components/containers/topBanners/TopBanners.tsx
-index 9cf4a6061a..3d609b33d6 100644
+index 7bba894be7..8ab664741c 100644
 --- a/packages/components/containers/topBanners/TopBanners.tsx
 +++ b/packages/components/containers/topBanners/TopBanners.tsx
-@@ -4,7 +4,6 @@ import type { APP_NAMES } from '@proton/shared/lib/constants';
- 
+@@ -5,7 +5,6 @@ import type { APP_NAMES } from '@proton/shared/lib/constants';
+ import AccessTypeTopBanner from './AccessTypeTopBanner';
  import BadAppVersionBanner from './BadAppVersionBanner';
  import DelinquentTopBanner from './DelinquentTopBanner';
 -import DesktopNotificationTopBanner from './DesktopNotificationTopBanner';
@@ -387,9 +387,8 @@ index 9cf4a6061a..3d609b33d6 100644
 @@ -29,7 +28,6 @@ const TopBanners = ({ children, app }: Props) => {
              <StorageLimitTopBanner app={app} />
              <BadAppVersionBanner />
-             <SubUserTopBanner />
+             <AccessTypeTopBanner />
 -            <DesktopNotificationTopBanner />
              <PendingInvitationTopBanner />
              <SubscriptionEndsBanner app={app} />
              <SessionRecoveryBanners />
---
